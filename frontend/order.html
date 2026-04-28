@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buat Pesanan — AdminPanel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+    .form-card { animation: fadeUp .4s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <span class="brand-name">AdminPanel</span>
+      <span class="brand-badge">v2.0</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="orders-list.html" class="nav-item">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">👤</span> Daftar Akun
+      </a>
+      <a href="order.html" class="nav-item active">
+        <span class="nav-icon">🛒</span> Buat Pesanan
+      </a>
+
+    
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name">Administrator</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="page-title-wrap">
+        <div class="page-title">Buat Pesanan</div>
+        <div class="page-breadcrumb">Home / Pesanan / Buat Pesanan Baru</div>
+      </div>
+    
+     
+    </header>
+
+    <main class="page-content">
+      <div class="form-card card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Form Pesanan Baru</div>
+            <div class="card-subtitle">Isi detail pesanan untuk diproses</div>
+          </div>
+          <span style="font-size:24px">🛒</span>
+        </div>
+        <div class="card-body">
+
+          <div class="form-section">
+            <div class="form-section-title">Detail Pesanan</div>
+
+            <div class="form-group">
+              <label class="form-label">User ID</label>
+              <div class="input-wrap">
+                <span class="input-icon">#</span>
+                <input type="number" id="userId" class="form-control with-icon" placeholder="Masukkan User ID">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Nama Produk</label>
+              <div class="input-wrap">
+                <span class="input-icon">📦</span>
+                <input type="text" id="productName" class="form-control with-icon" placeholder="Nama produk yang dipesan">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Harga</label>
+              <div class="input-wrap">
+                <span class="input-icon" style="font-family:'DM Mono',monospace;font-size:13px;left:12px">Rp</span>
+                <input type="number" id="totalPrice" class="form-control" style="padding-left:42px" placeholder="0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Card -->
+          <div id="orderPreview" style="background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; margin-bottom:20px; display:none">
+            <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px">Preview Pesanan</div>
+            <div style="display:flex; justify-content:space-between; font-size:14px">
+              <span style="color:var(--text-secondary)">Produk</span>
+              <span id="previewProduct" style="font-weight:600">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:14px; margin-top:6px">
+              <span style="color:var(--text-secondary)">Total</span>
+              <span id="previewPrice" class="money" style="color:var(--success); font-weight:700">—</span>
+            </div>
+          </div>
+
+          <button id="btnOrder" onclick="createOrder()" class="btn btn-success btn-full">
+            <span>🛒</span> Pesan Sekarang
+          </button>
+
+          <div style="display:flex; gap:10px; margin-top:12px">
+            <a href="index.html" class="btn btn-outline" style="flex:1; font-size:13px">
+              👤 Daftar Akun
+            </a>
+            <a href="orders-list.html" class="btn btn-outline" style="flex:1; font-size:13px">
+              📊 Lihat Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="script.js"></script>
+  <script>
+    // Live preview
+    function updatePreview() {
+      const p = document.getElementById('productName').value;
+      const t = document.getElementById('totalPrice').value;
+      const preview = document.getElementById('orderPreview');
+      if (p || t) {
+        preview.style.display = 'block';
+        document.getElementById('previewProduct').textContent = p || '—';
+        document.getElementById('previewPrice').textContent = t ? 'Rp ' + Number(t).toLocaleString('id-ID') : '—';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+    document.getElementById('productName').addEventListener('input', updatePreview);
+    document.getElementById('totalPrice').addEventListener('input', updatePreview);
+  </script>
+</body>
+</html>

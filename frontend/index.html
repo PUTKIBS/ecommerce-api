@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Akun — AdminPanel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @keyframes fadeRow { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+    .form-card { animation: fadeUp .4s ease; }
+  </style>
+</head>
+<body>
 
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <span class="brand-name">AdminPanel</span>
+      <span class="brand-badge">v2.0</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="orders-list.html" class="nav-item">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="index.html" class="nav-item active">
+        <span class="nav-icon">👤</span> Daftar Akun
+      </a>
+      <a href="order.html" class="nav-item">
+        <span class="nav-icon">🛒</span> Buat Pesanan
+      </a>
+
+   
+  
+    
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name">Administrator</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="page-title-wrap">
+        <div class="page-title">Daftar Akun</div>
+        <div class="page-breadcrumb">Home / Manajemen Pengguna / Daftar Akun</div>
+      </div>
+    
+    </header>
+
+    <main class="page-content">
+      <div class="form-card card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Formulir Pendaftaran</div>
+            <div class="card-subtitle">Lengkapi data untuk membuat akun baru</div>
+          </div>
+          <span style="font-size:24px">👤</span>
+        </div>
+        <div class="card-body">
+          <div class="form-section">
+            <div class="form-section-title">Informasi Pribadi</div>
+
+            <div class="form-group">
+              <label class="form-label">Nama Lengkap</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="name" class="form-control with-icon" placeholder="Masukkan nama lengkap">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Alamat Email</label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="email" class="form-control with-icon" placeholder="contoh@email.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="password" class="form-control with-icon" placeholder="Minimal 8 karakter">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Alamat Lengkap</label>
+              <div class="input-wrap">
+                <span class="input-icon">📍</span>
+                <input type="text" id="address" class="form-control with-icon" placeholder="Jl. Contoh No. 1, Kota">
+              </div>
+            </div>
+          </div>
+
+          <button id="btnRegister" onclick="registerUser()" class="btn btn-primary btn-full">
+            <span>👤</span> Daftar Sekarang
+          </button>
+
+          <div style="display:flex; gap:10px; margin-top:12px">
+            <a href="order.html" class="btn btn-outline" style="flex:1; font-size:13px">
+              🛒 Buat Pesanan
+            </a>
+            <a href="orders-list.html" class="btn btn-outline" style="flex:1; font-size:13px">
+              📊 Lihat Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="script.js"></script>
+</body>
+</html>

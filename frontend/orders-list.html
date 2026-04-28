@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pesanan — AdminPanel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @keyframes fadeRow { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    @keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    .stat-card { animation: countUp .5s ease both; }
+    .stat-card:nth-child(2) { animation-delay:.08s; }
+    .stat-card:nth-child(3) { animation-delay:.16s; }
+    .stat-card:nth-child(4) { animation-delay:.24s; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <span class="brand-name">AdminPanel</span>
+      <span class="brand-badge">v2.0</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="orders-list.html" class="nav-item active">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">👤</span> Daftar Akun
+      </a>
+      <a href="order.html" class="nav-item">
+        <span class="nav-icon">🛒</span> Buat Pesanan
+      </a>
+
+   
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name">Administrator</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="page-title-wrap">
+        <div class="page-title">Dashboard Pesanan</div>
+        <div class="page-breadcrumb">Home / Pesanan / Semua Pesanan</div>
+      </div>
+
+    </header>
+
+    <main class="page-content">
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card indigo">
+          <div class="stat-icon">📦</div>
+          <div class="stat-value" id="totalOrders">—</div>
+          <div class="stat-label">Total Pesanan</div>
+          <div class="stat-change up">↑ Semua pesanan</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="completedOrders">—</div>
+          <div class="stat-label">Selesai</div>
+          <div class="stat-change up">↑ Pesanan selesai</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value" id="pendingOrders">—</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-change" style="color:var(--warning)">⏳ Menunggu proses</div>
+        </div>
+        <div class="stat-card cyan">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value money" id="totalRevenue" style="font-size:18px">—</div>
+          <div class="stat-label">Total Pendapatan</div>
+          <div class="stat-change up">↑ Semua transaksi</div>
+        </div>
+      </div>
+
+      <!-- TABLE CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Daftar Pesanan</div>
+            <div class="card-subtitle">Semua transaksi yang masuk ke sistem</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <input
+              type="text"
+              id="searchInput"
+              onkeyup="filterTable()"
+              class="form-control"
+              style="width:200px; font-size:13px; padding:8px 12px"
+              placeholder="🔍 Cari pesanan...">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody">
+              <tr class="loading-row">
+                <td colspan="5">
+                  <span class="spinner"></span> Memuat data pesanan...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="padding:16px 22px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center">
+          <span style="font-size:13px; color:var(--text-muted)">
+            Menampilkan <span id="rowCount" style="font-weight:600; color:var(--text-primary)">—</span> pesanan
+          </span>
+          <div style="display:flex; gap:8px">
+            <a href="index.html" class="btn btn-outline btn-sm">👤 Daftar Akun</a>
+            <a href="order.html" class="btn btn-primary btn-sm">+ Tambah Pesanan</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="script.js"></script>
+  <script>
+    let allOrders = [];
+
+    // Override loadOrders to also update stat cards
+    window.addEventListener('load', async () => {
+      await loadOrders();
+    });
+
+    const _origLoad = loadOrders;
+    async function loadOrders() {
+      const tableBody = document.getElementById('orderTableBody');
+      if (!tableBody) return;
+      tableBody.innerHTML = `<tr class="loading-row"><td colspan="5"><span class="spinner"></span> Memuat data...</td></tr>`;
+
+      try {
+        const response = await fetch('http://localhost:3002/api/orders');
+        allOrders = await response.json();
+        updateStats(allOrders);
+        renderTable(allOrders);
+      } catch (error) {
+        tableBody.innerHTML = `
+          <tr><td colspan="5">
+            <div class="empty-state">
+              <div class="empty-icon">⚠️</div>
+              <p>Gagal memuat data. Periksa koneksi server.</p>
+            </div>
+          </td></tr>`;
+      }
+    }
+
+    function updateStats(orders) {
+      document.getElementById('totalOrders').textContent = orders.length;
+      const completed = orders.filter(o => ['success','completed'].includes(o.status?.toLowerCase())).length;
+      const pending   = orders.filter(o => o.status?.toLowerCase() === 'pending').length;
+      const revenue   = orders.reduce((s, o) => s + Number(o.total_price || 0), 0);
+      document.getElementById('completedOrders').textContent = completed;
+      document.getElementById('pendingOrders').textContent   = pending;
+      document.getElementById('totalRevenue').textContent = 'Rp ' + revenue.toLocaleString('id-ID');
+    }
+
+    function renderTable(orders) {
+      const tableBody = document.getElementById('orderTableBody');
+      const rowCount  = document.getElementById('rowCount');
+
+      if (rowCount) rowCount.textContent = orders.length;
+
+      if (orders.length === 0) {
+        tableBody.innerHTML = `
+          <tr><td colspan="5">
+            <div class="empty-state">
+              <div class="empty-icon">📦</div>
+              <p>Tidak ada pesanan yang ditemukan</p>
+            </div>
+          </td></tr>`;
+        return;
+      }
+
+      const statusMap = {
+        pending:   { cls: 'pending', icon: '⏳' },
+        success:   { cls: 'success', icon: '✅' },
+        completed: { cls: 'success', icon: '✅' },
+        cancelled: { cls: 'danger',  icon: '❌' },
+      };
+
+      tableBody.innerHTML = orders.map((order, i) => {
+        const s = statusMap[order.status?.toLowerCase()] || { cls: 'info', icon: '📋' };
+        return `
+          <tr style="animation: fadeRow .3s ease ${i * 0.04}s both">
+            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted)">#${String(order.id).padStart(4,'0')}</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:12px">USR-${order.user_id}</span></td>
+            <td style="font-weight:500">${order.product_name}</td>
+            <td><span class="money">Rp ${Number(order.total_price).toLocaleString('id-ID')}</span></td>
+            <td><span class="badge ${s.cls}">${s.icon} ${order.status}</span></td>
+          </tr>`;
+      }).join('');
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allOrders.filter(o =>
+        o.product_name?.toLowerCase().includes(q) ||
+        String(o.id).includes(q) ||
+        String(o.user_id).includes(q) ||
+        o.status?.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    }
+  </script>
+</body>
+</html>

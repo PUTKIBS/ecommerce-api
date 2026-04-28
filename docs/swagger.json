@@ -1,1 +1,65 @@
-
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-Commerce Microservices API",
+    "version": "1.0.0",
+    "description": "Dokumentasi API untuk Proyek UTS E-Commerce (User & Order Service)"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3301",
+      "description": "User Service Server"
+    },
+    {
+      "url": "http://localhost:3002",
+      "description": "Order Service Server"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "summary": "Mendaftarkan user baru",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" },
+                  "address": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "User berhasil terdaftar" } }
+      }
+    },
+    "/api/orders": {
+      "post": {
+        "summary": "Membuat pesanan baru",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "integer" },
+                  "product_name": { "type": "string" },
+                  "total_price": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Order berhasil dibuat" } }
+      },
+      "get": {
+        "summary": "Melihat semua pesanan",
+        "responses": { "200": { "description": "Daftar pesanan berhasil diambil" } }
+      }
+    }
+  }
+}
